@@ -7,12 +7,12 @@ function fillHtml(html, data) {
         var count = countKey(k, html);
         while (num < count) {
             if (value instanceof Array) {
-                var label = findLabel(k, html);
-                if (label === null) {
+                var targetString = findTargetElement(k, html);
+                if (targetString === null) {
+                    num++;
                     continue;
                 }
-                var targetString = findTargetElement(k, label, html).trim();
-                var forStrs = findForStrs("for=\"", "\"", targetString).split(" ");
+                var forStrs = findForStrs(targetString);
                 var templateStr = findTemplateStr(targetString, k);
                 templateStr = fillHtmlArray(templateStr, forStrs, value);
                 html = html.replace(targetString, templateStr);
@@ -52,49 +52,20 @@ function countKey(k, html) {
     return num;
 }
 
-function findLabel(k, target) {
+function findTargetElement(k, target) {
     var kRegex = new RegExp(k);
     //页面中没有这个key
     if (target.match(kRegex) === null) {
         return null
     }
     var kIdx = target.indexOf(target.match(kRegex)[0]);
-    var startIdx = target.lastIndexOf("<", kIdx);
-    target = target.substring(startIdx, kIdx);
-    return target.substring(1, target.indexOf(' '));
+    var endIdx = target.indexOf(target.match(new RegExp('/' + k))[0], kIdx);
+    return target.substring(kIdx - 1, endIdx + k.length + 2);
 }
 
-function findKIdx(k, target) {
-    var kRegex = new RegExp(k);
-    return target.indexOf(target.match(kRegex)[0]);
-}
-
-function findElementStart(k, target) {
-    var kRegex = new RegExp(k);
-    var kIdx = target.indexOf(target.match(kRegex)[0]);
-    var startIdx = target.lastIndexOf("<", kIdx);
-    var endIdx = target.indexOf(">", kIdx) + 1;
-    return target.substring(startIdx, endIdx);
-}
-
-function findTargetElement(k, label, html) {
-    var endRegex = new RegExp("</" + label + ">");
-    var start = findElementStart(k, html);
-    var end = html.match(endRegex)[0];
-    var startIdx = html.indexOf(start);
-    var endIdx = html.indexOf(end, startIdx) + end.length;
-    return html.substring(startIdx, endIdx);
-}
-
-function findForStrs(start, end, html) {
-    var startRegex = new RegExp(start);
-    var endRegex = new RegExp(end);
-    var start = html.match(startRegex)[0];
-    var end = html.match(endRegex)[0];
-    var startIdx = html.indexOf(start);
-    var endIdx = html.indexOf(end, startIdx + start.length) + end.length;
-    html = html.substring(startIdx + 1, endIdx)
-    return html.substring(html.indexOf("\""), html.lastIndexOf("\"")).trim().replace(new RegExp("\"", "g"), "");
+function findForStrs(html) {
+    var arr = html.split(/\n/);
+    return arr[0].substring(1, arr[0].length - 2).split(' ');
 }
 
 function fillHtmlArray(html, forStrs, data) {
@@ -103,32 +74,20 @@ function fillHtmlArray(html, forStrs, data) {
         if (v instanceof Object) {
             var childData = {};
             Object.keys(v).forEach(k => {
-                childData[`${forStrs[0]}.${k}`] = v[k];
+                childData[`${forStrs[1]}.${k}`] = v[k];
             })
             result += fillHtml(html, childData);
         } else {
-            result += html.replace(new RegExp("\\{\\{" + forStrs[0] + "\\}\\}", "g"), v.toString());
+            result += html.replace(new RegExp("\\{\\{" + forStrs[1] + "\\}\\}", "g"), v.toString());
         }
         result += "\n";
     })
     return result;
 }
 
-function findTemplateStr(targetString, k) {
-    var kIds = findKIdx(k, targetString);
-    var startIdx = targetString.indexOf(" for");
-    var endIds = targetString.indexOf("\"", kIds) + 1;
-    return targetString.replace(targetString.substring(startIdx, endIds), "");
-}
-
-function findBetween(start, end, html) {
-    var startRegex = new RegExp(start);
-    var endRegex = new RegExp(end);
-    var start = html.match(startRegex)[0];
-    var end = html.match(endRegex)[0];
-    var startIdx = html.indexOf(start);
-    var endIdx = html.indexOf(end, startIdx) + end.length;
-    return html.substring(startIdx, endIdx);
+function findTemplateStr(targetString) {
+    var arr = targetString.split(/\n/);
+    return targetString.replace(arr[0], '').replace(arr[arr.length - 1], '').trim();
 }
 
 module.exports = fillHtml;
