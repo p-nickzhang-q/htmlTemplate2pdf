@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>表格</title>
+
+</head>
+
+<body>
+    <table border="1" width="100%">
+        <tr>
+            <td rowspan="2 ">部门</td>
+            <!--  合并行-->
+            <td rowspan="2 ">姓名</td>
+            <td colspan="2 ">工资</td>
+            <td colspan="2 ">补贴</td>
+            <!--  合并列-->
+            <td rowspan="2 ">应发工资</td>
+        </tr>
+        <tr>
+            <td>基本工资</td>
+            <td>到岗工资</td>
+            <td>午餐工资</td>
+            <td>高温补助</td>
+
+        </tr>
+        <tr>
+            <td rowspan="2 ">{{部门}}</td>
+            <td>{{姓名}}</td>
+            <td>{{基本工资}}</td>
+            <td>{{到岗工资}}</td>
+            <td>{{午餐工资}}</td>
+            <td>{{高温补助}}</td>
+            <td>{{应发工资}}</td>
+        </tr>
+    </table>
+</body>
+
+</html>
