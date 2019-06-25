@@ -70,15 +70,16 @@ function findForStrs(html) {
 
 function fillHtmlArray(html, forStrs, data) {
     var result = "";
+    var itemStr = forStrs[1].split('=')[1].replace(new RegExp('\"', "g"), "");
     data.forEach(v => {
         if (v instanceof Object) {
             var childData = {};
             Object.keys(v).forEach(k => {
-                childData[`${forStrs[1]}.${k}`] = v[k];
+                childData[`${itemStr}.${k}`] = v[k];
             })
             result += fillHtml(html, childData);
         } else {
-            result += html.replace(new RegExp("\\{\\{" + forStrs[1] + "\\}\\}", "g"), v.toString());
+            result += html.replace(new RegExp("\\{\\{" + itemStr + "\\}\\}", "g"), v.toString());
         }
         result += "\n";
     })

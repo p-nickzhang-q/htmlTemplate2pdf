@@ -24,15 +24,17 @@
             <td>高温补助</td>
 
         </tr>
-        <tr>
-            <td rowspan="2 ">{{部门}}</td>
-            <td>{{姓名}}</td>
-            <td>{{基本工资}}</td>
-            <td>{{到岗工资}}</td>
-            <td>{{午餐工资}}</td>
-            <td>{{高温补助}}</td>
-            <td>{{应发工资}}</td>
-        </tr>
+        <arr item="item">
+            <tr>
+                <td>{{item.部门}}</td>
+                <td>{{item.姓名}}</td>
+                <td>{{item.基本工资}}</td>
+                <td>{{item.到岗工资}}</td>
+                <td>{{item.午餐工资}}</td>
+                <td>{{item.高温补助}}</td>
+                <td>{{item.应发工资}}</td>
+            </tr>
+        </arr>
     </table>
 </body>
 
