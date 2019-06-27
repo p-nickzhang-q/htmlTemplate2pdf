@@ -16,6 +16,8 @@ function fillHtml(html, data) {
                 var templateStr = findTemplateStr(targetString, k);
                 templateStr = fillHtmlArray(templateStr, forStrs, value);
                 html = html.replace(targetString, templateStr);
+            } else if (value instanceof Object) {
+                html = fillHtmlObj(html, value, k);
             } else if (typeof value === 'number') {
                 if (k.indexOf('date') !== -1 || k.indexOf('time') !== -1) {
                     if (value === 0) {
@@ -36,6 +38,14 @@ function fillHtml(html, data) {
         }
     }
     return html;
+}
+
+function fillHtmlObj(html, value, parentKey) {
+    var result = {}
+    Object.keys(value).forEach(childKey => {
+        result[`${parentKey}.${childKey}`] = value[childKey];
+    });
+    return fillHtml(html, result);
 }
 
 function setValue(k, value, html) {
