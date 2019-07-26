@@ -53,13 +53,15 @@ function setValue(k, value, html) {
 }
 
 function countKey(k, html) {
-    var num = 0;
-    var index = html.indexOf(k);
-    while (index !== -1) {
-        index = html.indexOf(k, index + 1);
-        num++;
-    }
-    return num;
+    var words = html.split(k);
+    return words.length - 1;
+    // var num = 0;
+    // var index = html.indexOf(k);
+    // while (index !== -1) {
+    //     index = html.indexOf(k, index + 1);
+    //     num++;
+    // }
+    // return num;
 }
 
 function findTargetElement(k, target) {
